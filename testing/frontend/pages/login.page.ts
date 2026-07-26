@@ -1,6 +1,4 @@
-// @ts-check
 import { type Page, type Locator } from '@playwright/test';
-import {env} from '../../../utils/env'
 
 export class LoginPage {
     constructor(private readonly page: Page) {}
@@ -26,7 +24,7 @@ export class LoginPage {
     }
 
     async open() {
-        await this.page.goto(env.uiUrl)
+        await this.page.goto('/practice-test-login/')
     }
 
     async fillUser(username: string) {

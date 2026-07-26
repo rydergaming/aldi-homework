@@ -4,7 +4,7 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 export interface TestEnv {
-    uiUrl: string,
+    url: string,
     user: {
         username: string,
         password: string
@@ -12,7 +12,7 @@ export interface TestEnv {
 }
 
 export const env: TestEnv = {
-    uiUrl: process.env.UI_URL ?? 'http://localhost:8080',
+    url: process.env.URL ?? 'http://localhost:8080',
     user : {
         username: process.env.UI_USERNAME ?? '',
         password: process.env.UI_PASSWORD ?? ''

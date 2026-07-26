@@ -1,1 +1,4 @@
 # aldi-homework
+
+## Project structure
+

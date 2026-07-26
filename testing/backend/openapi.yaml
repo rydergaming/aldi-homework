@@ -1,0 +1,256 @@
+openapi: 3.2.0
+info:
+  title: Task Management API
+  description: |-
+    This is a task management API for the Aldi QA Test Automation engineer position's homework.
+  version: 1.0.13
+externalDocs:
+  description: Test and practice your automation skills as wanted
+  url: https://practicetestautomation.com
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Production server
+  - url: https://localhost:8081/api/v1
+    description: Staging server
+security: [{ basicAuth: [] }]
+tags:
+  - name: task
+    summary: Task management operations
+    description: CRUD task management operations
+paths:
+  /task:    
+    post:
+      tags:
+        - task
+      summary: Add a new task to the store.
+      description: Add a new task to the store.
+      operationId: addTask
+      requestBody:
+        description: Create a new task in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /task/{taskId}:
+    get:
+      tags:
+        - task
+      summary: Find task by identifier.
+      description: Returns a single task.
+      operationId: getTaskById
+      parameters:
+          - in: path
+            name: taskId
+            required: true
+            schema:
+              type: integer
+              minimum: 1
+            description: The task ID
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Task not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - task
+      summary: Updates a task in the system.
+      description: update a single task.
+      operationId: updateTaskById
+      parameters:
+        - name: taskId
+          in: path
+          description: ID of task that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        description: Update a new task in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+        required: true
+      responses:
+        '200':
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        '400':
+          description: Invalid input
+        '404':
+          description: Task not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - task
+      summary: Deletes a task.
+      description: Delete a task.
+      operationId: deleteTaskById
+      parameters:
+        - name: taskId
+          in: path
+          description: task id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  id: 
+                    type: integer
+                    format: int64
+                    examples: [10]
+        '400':
+          description: Invalid task value
+        '404':
+          description: Task not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Task:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples: [10]
+        name:
+          type: string
+          examples: [Bugfixing task]
+        assignee:
+          type: string
+          examples: [John Doe]
+        description:
+          type: string
+          examples: [Detailed description of the task]
+        status:
+          type: string
+          description: Task status
+          enum:
+            - new
+            - in progress
+            - in testing
+            - done
+    CreateTask:
+      required: 
+        - name
+        - assignee
+      type: object
+      properties:
+        name:
+          type: string
+          examples: [Bugfixing task]
+        assignee:
+          type: string
+          examples: [John Doe]
+        description:
+          type: string
+          examples: [Detailed description of the task]
+        status:
+          type: string
+          description: Task status
+          enum:
+            - new
+            - in progress
+            - in testing
+            - done
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  requestBodies:
+    Task:
+      description: task object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Task'

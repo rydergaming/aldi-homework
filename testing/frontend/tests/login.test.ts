@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test} from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import {env} from '../../../utils/env'
 import { LandingPage } from '../pages/landing.page';
@@ -18,7 +18,7 @@ test.describe('Login tests', () => {
         await expect(landingPage.landingHeader()).toBeVisible()
     })
 
-    test('Incorrect login test', async ({page}) => {
+    test('Incorrect password test', async ({page}) => {
         const loginPage = new LoginPage(page)
         
         await loginPage.open()
@@ -34,6 +34,19 @@ test.describe('Login tests', () => {
         await loginPage.fillPassword(env.user.password)
         await loginPage.clickSubmit()
 
+        await expect(landingPage.landingHeader()).toBeHidden()
+        await expect(loginPage.wrongUserError()).toBeVisible()
+
+    })
+
+    test('Incorrect user test', async ({page}) => {
+        const loginPage = new LoginPage(page)
+        
+        await loginPage.fillUser('notUser')
+        await loginPage.fillPassword(env.user.password)
+        await loginPage.clickSubmit()
+
+        const landingPage = new LandingPage(page)
         await expect(landingPage.landingHeader()).toBeHidden()
         await expect(loginPage.wrongUserError()).toBeVisible()
 
