@@ -17,7 +17,7 @@ public class TaskManagerTest {
     @BeforeAll
     static void setup() {
         api = new ApiHelper(
-                env("URL", "http://localhost:8080"),
+                env("API_URL", "http://localhost:8080"),
                 env("UI_USERNAME", "student"),
                 env("UI_PASSWORD", "Password123"));
     }

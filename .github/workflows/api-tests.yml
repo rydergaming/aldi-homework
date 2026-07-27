@@ -15,7 +15,7 @@ jobs:
       - name: Run Java API tests
         env:
           # Non-secret, so it stays readable in the run log.
-          URL: ${{ vars.API_URL }}
+          API_URL: ${{ vars.API_URL }}
           UI_USERNAME: ${{ secrets.UI_USERNAME }}
           UI_PASSWORD: ${{ secrets.UI_PASSWORD }}
         run: docker compose run --rm api-tests

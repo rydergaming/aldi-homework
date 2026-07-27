@@ -37,7 +37,9 @@ export default defineConfig({
   projects: [
     {
       name: 'api',
-      testDir: './testing/backend'
+      testDir: './testing/backend',
+      /* The API lives elsewhere than the storefront, so it overrides the shared baseURL. */
+      use: { baseURL: env.apiUrl },
     },
     {
       name: 'chromium',
@@ -78,10 +80,11 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  /* Start the reference implementation of testing/backend/openapi.yaml, so the api
+     project has a conforming target. Skipped when API_URL points somewhere real. */
+  webServer: process.env.API_URL ? undefined : {
+    command: 'node testing/backend/mock/server.ts',
+    port: 8080,
+    reuseExistingServer: !process.env.CI,
+  },
 });

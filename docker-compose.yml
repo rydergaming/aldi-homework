@@ -5,11 +5,11 @@ services:
     environment:
       # Fail fast with a readable message rather than silently defaulting to
       # localhost. Values come from the shell, from .env, or from CI secrets.
-      URL: ${URL:?set URL to the API base, e.g. https://tasks.example.com}
+      API_URL: ${API_URL:?set API_URL to the API base, e.g. https://tasks.example.com}
       UI_USERNAME: ${UI_USERNAME:?set UI_USERNAME}
       UI_PASSWORD: ${UI_PASSWORD:?set UI_PASSWORD}
     extra_hosts:
-      # Lets URL=http://host.docker.internal:8080 reach a server running
+      # Lets API_URL=http://host.docker.internal:8080 reach a server running
       # on the host machine rather than inside the compose network.
       - "host.docker.internal:host-gateway"
     volumes:

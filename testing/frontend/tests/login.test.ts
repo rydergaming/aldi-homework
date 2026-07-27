@@ -29,19 +29,12 @@ test.describe('Login tests', () => {
         const landingPage = new LandingPage(page)
         await expect(landingPage.landingHeader()).toBeHidden()
         await expect(loginPage.wrongPasswordError()).toBeVisible()
-
-        await loginPage.fillUser('notUser')
-        await loginPage.fillPassword(env.user.password)
-        await loginPage.clickSubmit()
-
-        await expect(landingPage.landingHeader()).toBeHidden()
-        await expect(loginPage.wrongUserError()).toBeVisible()
-
     })
 
     test('Incorrect user test', async ({page}) => {
         const loginPage = new LoginPage(page)
         
+        await loginPage.open()
         await loginPage.fillUser('notUser')
         await loginPage.fillPassword(env.user.password)
         await loginPage.clickSubmit()
@@ -49,6 +42,5 @@ test.describe('Login tests', () => {
         const landingPage = new LandingPage(page)
         await expect(landingPage.landingHeader()).toBeHidden()
         await expect(loginPage.wrongUserError()).toBeVisible()
-
     })
 })

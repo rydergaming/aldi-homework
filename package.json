@@ -8,7 +8,8 @@
     "test:api": "playwright test --project=api",
     "test:ui": "playwright test --project=chromium",
     "test:headed": "playwright test --headed",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "mock": "node testing/backend/mock/server.ts"
   },
   "repository": {
     "type": "git",

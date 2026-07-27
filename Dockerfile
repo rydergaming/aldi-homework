@@ -11,5 +11,5 @@ RUN mvn -B dependency:go-offline
 
 COPY testing/selenium/src ./src
 
-# URL, UI_USERNAME and UI_PASSWORD are supplied at runtime by docker-compose.yml
+# API_URL, UI_USERNAME and UI_PASSWORD are supplied at runtime by docker-compose.yml
 CMD ["mvn", "-B", "test"]
