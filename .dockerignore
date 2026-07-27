@@ -1,0 +1,15 @@
+# The build context is the repository root, so everything the image does not
+# need is excluded here — it is uploaded to the Docker daemon otherwise.
+
+# Node/Playwright side of the repo: irrelevant to the Java suite
+node_modules
+playwright-report
+test-results
+
+# Credentials must arrive as runtime environment, never baked into a layer
+.env
+
+# Build output and VCS metadata
+testing/selenium/target
+.git
+*.log

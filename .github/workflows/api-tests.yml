@@ -1,0 +1,30 @@
+name: API tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Java API tests
+        env:
+          # Non-secret, so it stays readable in the run log.
+          URL: ${{ vars.API_URL }}
+          UI_USERNAME: ${{ secrets.UI_USERNAME }}
+          UI_PASSWORD: ${{ secrets.UI_PASSWORD }}
+        run: docker compose run --rm api-tests
+
+      - name: Upload surefire reports
+        # Reports matter most when the suite is red, so do not gate on success.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: testing/selenium/target/surefire-reports/
+          if-no-files-found: warn
