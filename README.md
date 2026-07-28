@@ -22,10 +22,10 @@ This is worth stating plainly: a green API run proves the tests execute and the 
 
 | Suite | Needs |
 | --- | --- |
-| Playwright | Node.js 22.6 or newer (developed on v26) and npm |
+| Playwright | Node.js 22.18 or newer, or 23.6 or newer (developed on v26), and npm |
 | Java | JDK 17 and Maven 3.9 — or just Docker, which needs neither |
 
-The reference implementation is TypeScript run directly by Node, which is why the version floor is higher than Playwright alone would need.
+The reference implementation is TypeScript run directly by Node, which is why the version floor is higher than Playwright alone would need. Those two releases are where type stripping runs unflagged; 22.6 introduced it behind `--experimental-strip-types`, which none of the commands below pass.
 
 ## Setup
 
@@ -34,24 +34,26 @@ npm install
 npx playwright install
 ```
 
-Optionally create a local environment file from the template:
+Then create a local environment file from the template:
 
 ```bash
 cp .env.example .env
 ```
 
-`.env` is git-ignored; `.env.example` documents every variable the suites read. Defaults cover a local run, so this is only needed to point the suites elsewhere.
+`.env` is git-ignored; `.env.example` documents every variable the suites read and carries working values for a local run. Skip it and the UI suite points at `localhost` instead of the site under test, while the API suite sends empty credentials and gets a 401 on every request.
 
 ## Configuration
 
 TypeScript loads configuration through [`utils/env.ts`](utils/env.ts), which [`playwright.config.ts`](playwright.config.ts) uses for `baseURL`. Java reads the same names in `TaskManagerTest.env(...)`, checking system properties first and falling back to environment variables.
 
-| Variable | Description | Default |
-| --- | --- | --- |
-| `URL` | Base URL for the UI suite. | `http://localhost:8080` |
-| `API_URL` | Base URL for the API suites. Unset means the bundled reference implementation. | `http://localhost:8080` |
-| `UI_USERNAME` | Username for the login tests and for API basic auth. | — |
-| `UI_PASSWORD` | Password for the login tests and for API basic auth. | — |
+| Variable | Description | Value in `.env.example` | Fallback if unset |
+| --- | --- | --- | --- |
+| `URL` | Base URL for the UI suite. | `https://practicetestautomation.com` | `http://localhost:8080` |
+| `API_URL` | Base URL for the API suites. Unset means the bundled reference implementation. | unset | `http://localhost:8080` |
+| `UI_USERNAME` | Username for the login tests and for API basic auth. | `student` | empty |
+| `UI_PASSWORD` | Password for the login tests and for API basic auth. | `Password123` | empty |
+
+The fallbacks exist so that reading configuration never throws; they are not usable values for the UI suite. Java falls back differently: `TaskManagerTest.env(...)` defaults to `http://localhost:8080`, `student` and `Password123`, matching the reference implementation.
 
 `URL` and `API_URL` are separate because the UI tests and the API are different systems; collapsing them sends API requests at the UI tests host.
 
@@ -120,6 +122,7 @@ It expects three values under **Settings → Secrets and variables → Actions**
 ```
 ├── Dockerfile                      # Java suite image (Maven + JDK 17)
 ├── .dockerignore                   # keeps node_modules and .env out of the build context
+├── .env.example                    # template for the git-ignored .env
 ├── docker-compose.yml              # api-tests service
 ├── playwright.config.ts            # projects, baseURL, webServer, reporter
 ├── .github/workflows/
